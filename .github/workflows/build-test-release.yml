@@ -1,0 +1,100 @@
+name: Build, Test and Release
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Get changed directories
+        id: set-matrix
+        run: |
+          DIRS=$(ls -d */ | grep -v 'node_modules\|.git\|.github' | sed 's/\///g' | jq -R -s -c 'split("\n")[:-1]')
+          echo "matrix=${DIRS}" >> $GITHUB_OUTPUT
+
+  build-and-test:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        action: ${{fromJson(needs.detect-changes.outputs.matrix)}}
+      fail-fast: false  # Continue with other actions even if one fails
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      
+      - name: Install root dependencies
+        run: npm ci
+      
+      - name: Install action dependencies
+        working-directory: ${{ matrix.action }}
+        run: npm ci
+      
+      - name: Build
+        working-directory: ${{ matrix.action }}
+        run: npm run build
+      
+      - name: Test
+        working-directory: ${{ matrix.action }}
+        run: |
+          if [ -f "package.json" ] && grep -q "\"test\"" "package.json"; then
+            npm test
+          fi
+
+  release:
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          release_name: Release v${{ steps.get_version.outputs.version }}
+          body: |
+            Release of version ${{ steps.get_version.outputs.version }}
+            
+            This release includes all actions in the repository:
+            - run-discovery
+            - run-scan
+            - stop-discovery
+            - stop-scan
+            - wait-for
+          draft: false
+          prerelease: false
