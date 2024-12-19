@@ -1,0 +1,63 @@
+name: CI / Automated testing
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  release:
+    name: Build GitHub Action
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
+        run: npm run build && npm run pack
+      - name: Copy files to release
+        run: |
+          mkdir release
+          cp README.md release/
+          cp action.yml release/
+          cp -R dist/ release/dist/
+      - name: Start Bright Discovery 🏁
+        id: discovery
+        uses: ./release
+        with:
+          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          name: GitHub discovery ${{ github.sha }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          hosts_filter: |
+            [ ]
+      - name: Stop the discovery 🛑
+        id: stop
+        uses: NeuraLegion/bright-github-actions/stop-discovery@release
+        with:
+          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          discovery_id: ${{ steps.discovery.outputs.id }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
+      - name: Rerun Bright Discovery 🏁
+        id: discovery-rerun
+        uses: ./release
+        with:
+          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          name: GitHub discovery rerun ${{ github.sha }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
+          restart_discovery_id: ${{ steps.discovery.outputs.id }}
+      - name: Stop the restarted discovery 🛑
+        id: stop-rerun
+        uses: NeuraLegion/bright-github-actions/stop-discovery@release
+        with:
+          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          discovery_id: ${{ steps.discovery-rerun.outputs.id }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
