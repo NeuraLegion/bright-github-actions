@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    env:
+      HUSKY: 0
     steps:
       - uses: actions/checkout@v3
       
@@ -25,6 +27,8 @@ jobs:
   build-and-test:
     needs: detect-changes
     runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
     strategy:
       matrix:
         action: ${{fromJson(needs.detect-changes.outputs.matrix)}}
@@ -61,6 +65,8 @@ jobs:
     needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
     steps:
       - uses: actions/checkout@v3
         with:
