@@ -1,5 +1,5 @@
-name: NeuraLegion Wait for Issues
-description: 'Run a NeuraLegion scan right in GitHub Action'
+name: Bright Security Wait for Issues
+description: 'Wait for found vulnerabilities right inside a GitHub Action'
 branding:
   icon: clock
   color: blue
@@ -45,5 +45,5 @@ outputs:
   url:
     description: 'Url of the resulting scan'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

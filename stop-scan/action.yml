@@ -14,5 +14,5 @@ inputs:
     description: 'Hostname. Default is app.brightsec.com'
     required: false
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
