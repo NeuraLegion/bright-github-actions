@@ -1,0 +1,11 @@
+dist/
+assets/
+node_modules/
+coverage/
+*.log
+*-lock.json
+*.lock
+.git
+.husky/_
+*.d.ts
+*.js.map

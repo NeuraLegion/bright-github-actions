@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Scan Start
         id: start
-        uses: NeuraLegion/run-scan@release
+        uses: NeuraLegion/bright-github-actions/run-scan@release
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN}}
           hostname: app.brightsec.com
@@ -31,7 +31,7 @@ jobs:
             [ "https://brokencrystals.com" ]
       - name: Wait for breakpoint
         id: wait
-        uses: NeuraLegion/wait-for@release
+        uses: NeuraLegion/bright-github-actions/wait-for@release
         with:
           api_token:  ${{ secrets.BRIGHT_TOKEN }}
           hostname: app.brightsec.com

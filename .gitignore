@@ -1,3 +1,30 @@
+# Dependencies
 node_modules/
-package.json
-package-lock.json
+
+# Build
+**/dist/
+**/*.tsbuildinfo
+
+# IDE
+**/.idea/
+**/.vs/
+**/.vscode/
+**/*.code-workspace
+
+# OS
+**/.DS_Store
+
+# Debug & Testing
+**/.clinic/
+**/coverage/
+
+# Environment & Secrets
+**/.env
+**/.secrets
+
+# Misc
+**/.stfolder/
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
