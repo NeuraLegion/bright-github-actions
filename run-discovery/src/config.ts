@@ -1,5 +1,6 @@
-import { Discovery, validateDiscovery } from './discovery';
 import { URL } from 'url';
+
+import { Discovery, validateDiscovery } from './discovery';
 
 export interface RequestExclusion {
   patterns?: string[];

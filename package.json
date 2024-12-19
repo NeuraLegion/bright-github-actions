@@ -1,0 +1,55 @@
+{
+  "name": "bright-github-actions",
+  "version": "1.0.0",
+  "description": "Bright Security GitHub Actions",
+  "private": true,
+  "workspaces": [
+    "run-scan",
+    "stop-scan",
+    "run-discovery",
+    "stop-discovery",
+    "wait-for"
+  ],
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format-check": "prettier --check \"**/*.{ts,js,json,md}\"",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeuraLegion/bright-github-actions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NeuraLegion/bright-github-actions/issues"
+  },
+  "homepage": "https://github.com/NeuraLegion/bright-github-actions#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

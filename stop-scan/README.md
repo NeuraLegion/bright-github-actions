@@ -32,10 +32,11 @@ Stop chasing ghosts and wasting time. Bright doesn’t return false positives, s
 Bright tests for all common vulnerabilities, such as SQL injection, CSRF, XSS, and XXE -- as well as uncommon vulnerabilities, such as business logic vulnerabilities.
 
 More information is available on Bright’s:
-* [Website](https://www.brightsec.com/)
-* [Knowledge base](https://docs.brightsec.com/docs/quickstart)
-* [YouTube channel](https://www.youtube.com/channel/UCoIC0T1pmozq3eKLsUR2uUw)
-* [GitHub Actions](https://github.com/marketplace?query=neuralegion+)
+
+- [Website](https://www.brightsec.com/)
+- [Knowledge base](https://docs.brightsec.com/docs/quickstart)
+- [YouTube channel](https://www.youtube.com/channel/UCoIC0T1pmozq3eKLsUR2uUw)
+- [GitHub Actions](https://github.com/marketplace?query=neuralegion+)
 
 # Inputs
 
@@ -60,35 +61,35 @@ start_and_stop_scan:
   runs-on: ubuntu-latest
   name: A job to run a NeuraLegion scan
   steps:
-  - name: 🏁 Start NeuraLegion Scan
-    id: start
-    uses: NeuraLegion/bright-github-actions/run-scan@master
-    with:
-      api_token: ${{ secrets.BRIGHT_TOKEN }}
-      name: GitHub scan ${{ github.sha }}
-      discovery_types: |
-        [ "crawler", "archive" ]
-      crawler_urls: |
-        [ "https://juice-shop.herokuapp.com" ]
-      file_id: LiYknMYSdbSZbqgMaC9Sj
-      hosts_filter: |
-        [ ]
-      wait_for: on_high
-  - name: Get the output scan url
-    run: echo "The scan was started on ${{ steps.start.outputs.url }}"
-  - name: ⏳ Wait for any issues
-    id: wait
-    uses: NeuraLegion/bright-github-actions/wait-for@master
-    with:
-      api_token: ${{ secrets.BRIGHT_TOKEN }}
-      scan: ${{ steps.start.outputs.id }}
-      wait_for: any
-      timeout: 100
-  - name: 🛑 Stop the scan
-    if: ${{ always() }}
-    id: stop
-    uses: NeuraLegion/bright-github-actions/stop-scan@master
-    with:
-      api_token: ${{ secrets.BRIGHT_TOKEN }}
-      scan: ${{ steps.start.outputs.id }}
+    - name: 🏁 Start NeuraLegion Scan
+      id: start
+      uses: NeuraLegion/bright-github-actions/run-scan@master
+      with:
+        api_token: ${{ secrets.BRIGHT_TOKEN }}
+        name: GitHub scan ${{ github.sha }}
+        discovery_types: |
+          [ "crawler", "archive" ]
+        crawler_urls: |
+          [ "https://juice-shop.herokuapp.com" ]
+        file_id: LiYknMYSdbSZbqgMaC9Sj
+        hosts_filter: |
+          [ ]
+        wait_for: on_high
+    - name: Get the output scan url
+      run: echo "The scan was started on ${{ steps.start.outputs.url }}"
+    - name: ⏳ Wait for any issues
+      id: wait
+      uses: NeuraLegion/bright-github-actions/wait-for@master
+      with:
+        api_token: ${{ secrets.BRIGHT_TOKEN }}
+        scan: ${{ steps.start.outputs.id }}
+        wait_for: any
+        timeout: 100
+    - name: 🛑 Stop the scan
+      if: ${{ always() }}
+      id: stop
+      uses: NeuraLegion/bright-github-actions/stop-scan@master
+      with:
+        api_token: ${{ secrets.BRIGHT_TOKEN }}
+        scan: ${{ steps.start.outputs.id }}
 ```

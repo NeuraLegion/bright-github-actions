@@ -1,5 +1,5 @@
-import { ranges, severities, Severity, SeverityThreshold } from './severity';
 import { Scan } from './scan';
+import { ranges, severities, Severity, SeverityThreshold } from './severity';
 
 type StatusEntry = [keyof Scan, Scan[keyof Scan]];
 

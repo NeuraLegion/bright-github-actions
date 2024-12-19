@@ -1,6 +1,7 @@
+import { URL } from 'url';
+
 import { Discovery, validateDiscovery } from './discovery';
 import { TestType, validateTests } from './tests';
-import { URL } from 'url';
 
 export interface RequestExclusion {
   patterns?: string[];

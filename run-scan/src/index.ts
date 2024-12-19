@@ -1,8 +1,9 @@
-import { TestType } from './tests';
-import { Discovery } from './discovery';
-import { Config, RequestExclusion, validateConfig } from './config';
-import { HttpClient } from '@actions/http-client';
 import * as core from '@actions/core';
+import { HttpClient } from '@actions/http-client';
+
+import { Config, RequestExclusion, validateConfig } from './config';
+import { Discovery } from './discovery';
+import { TestType } from './tests';
 
 interface Scan {
   id: string;
@@ -35,9 +36,7 @@ const hostsFilter = getArray('hosts_filter');
 const type = core.getInput('type');
 const hostname = core.getInput('hostname');
 
-const baseUrl = hostname
-  ? `https://${hostname}`
-  : 'https://app.brightsec.com';
+const baseUrl = hostname ? `https://${hostname}` : 'https://app.brightsec.com';
 
 const client = new HttpClient('GitHub Actions', [], {
   allowRetries: true,

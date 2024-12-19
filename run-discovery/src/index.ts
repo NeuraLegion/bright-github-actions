@@ -1,7 +1,8 @@
-import { Discovery } from './discovery';
-import { Config, RequestExclusion, validateConfig } from './config';
-import { HttpClient } from '@actions/http-client';
 import * as core from '@actions/core';
+import { HttpClient } from '@actions/http-client';
+
+import { Config, RequestExclusion, validateConfig } from './config';
+import { Discovery } from './discovery';
 
 interface DiscoveryID {
   id: string;

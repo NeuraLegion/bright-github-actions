@@ -1,16 +1,18 @@
+import { pathToFileURL } from 'url';
+
+import * as core from '@actions/core';
+import axios from 'axios';
+import axiosRetry from 'axios-retry';
+
 import { AsyncData, asyncPoll } from './async-poller';
-import { SeverityThreshold } from './severity';
-import { Scan, getStatus, stopScan } from './scan';
 import {
   getIssuesCounters,
   getSeverityForCounter,
   satisfyThreshold,
   IssuesCounter
 } from './issues';
-import * as core from '@actions/core';
-import axios from 'axios';
-import axiosRetry from 'axios-retry';
-import { pathToFileURL } from 'url';
+import { Scan, getStatus, stopScan } from './scan';
+import { SeverityThreshold } from './severity';
 
 const token = core.getInput('api_token', { required: true });
 const scanId = core.getInput('scan', { required: true });
@@ -62,7 +64,7 @@ const displayResults = async ({ state, url }: { state: Scan; url: string }) => {
   const options = getSarifOptions();
 
   try {
-    if (options?.codeScanningAlerts && options?.token) {
+    if (options.codeScanningAlerts && options.token) {
       await uploadSarif({ ...options, scanId });
     }
   } catch (e: any) {

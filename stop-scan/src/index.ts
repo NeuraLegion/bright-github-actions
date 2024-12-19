@@ -5,9 +5,7 @@ const apiToken = core.getInput('api_token');
 const scanId = core.getInput('scan');
 const hostname = core.getInput('hostname');
 
-const baseUrl = hostname
-  ? `https://${hostname}`
-  : 'https://app.brightsec.com';
+const baseUrl = hostname ? `https://${hostname}` : 'https://app.brightsec.com';
 const restc = new rm.RestClient('GitHub Actions', baseUrl);
 
 async function stopScan(uuid: string) {
