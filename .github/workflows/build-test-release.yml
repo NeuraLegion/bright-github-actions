@@ -10,7 +10,7 @@ on:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     env:
@@ -26,7 +26,7 @@ jobs:
 
   build-and-test:
     needs: detect-changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       HUSKY: 0
     strategy:
@@ -64,7 +64,7 @@ jobs:
   release:
     needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       HUSKY: 0
     steps:
