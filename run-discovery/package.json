@@ -1,7 +1,7 @@
 {
-  "name": "run-discover",
+  "name": "run-discovery",
   "version": "0.1.0",
-  "description": "This action runs a new discovery in NeuraLegion.",
+  "description": "This action runs a new discovery in Bright.",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
