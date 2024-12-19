@@ -11,7 +11,7 @@ inputs:
     description: 'Scan ID to wait for'
     required: true
   hostname:
-    description: 'Hostname. Default is app.neuralegion.com'
+    description: 'Hostname. Default is app.brightsec.com'
     required: false
 runs:
   using: 'node12'

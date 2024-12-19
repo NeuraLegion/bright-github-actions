@@ -72,7 +72,8 @@ _Example:_ `restart_discovery_id: ai3LG8DmVn9Rn1YeqCNRGQ)`
 
 - `archive` - uses an uploaded HAR-file for a discovery
 - `crawler` - uses a crawler to define the attack surface for a scan
-- `oas` - uses an uploaded OpenAPI schema for a discovery <br>
+- `oas` - uses an uploaded OpenAPI schema for a discovery
+- `graphql` - uses an uploaded OpenAPI schema, or an introspection endpoint <br>
   If no discovery type is specified, `crawler` is applied by default.
 
 _Example:_
@@ -84,12 +85,12 @@ discovery_types: |
 
 ### `file_id`
 
-**Required** if the discovery type is set to `archive` or `oas`. ID of a HAR-file or an OpenAPI schema you want to use for a discovery. You can get the ID of an uploaded HAR-file or an OpenAPI schema in the **Storage** section on [app.brightsec.com](https://app.brightsec.com/login).
+**Required** if the discovery type is set to `archive` or `oas` or `graphql`. ID of a HAR-file or an OpenAPI schema you want to use for a discovery. You can get the ID of an uploaded HAR-file or an OpenAPI schema in the **Storage** section on [app.brightsec.com](https://app.brightsec.com/login).
 
 _Example:_
 
 ```
-FILE_ID=$(nexploit-cli archive:upload   \
+FILE_ID=$(bright-cli archive:upload   \
 --token ${{ secrets.BRIGHTSEC_TOKEN }}   \
 --discard true                          \
 ./example.har)
@@ -196,7 +197,7 @@ ID of the created discovery.
 steps:
   - name: Start Bright Discovery
     id: start
-    uses: NeuraLegion/bright-github-actions/run-scan@release
+    uses: NeuraLegion/bright-github-actions/run-discovery@release
     with:
       api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
       name: GitHub discovery ${{ github.sha }}

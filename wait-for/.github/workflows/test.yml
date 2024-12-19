@@ -26,7 +26,7 @@ jobs:
         id: scan
         uses: NeuraLegion/bright-github-actions/run-scan@release
         with:
-          api_token: ${{ secrets.NEXPLOIT_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           name: GitHub scan ${{ github.sha }}
           discovery_types: |
             [ "crawler" ]
@@ -40,7 +40,7 @@ jobs:
         uses: ./release
         continue-on-error: true
         with:
-          api_token: ${{ secrets.NEXPLOIT_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           scan: ${{ steps.scan.outputs.id }}
           wait_for: any
           timeout: 340 # in general cases we'll have a timeout and it is good for this test

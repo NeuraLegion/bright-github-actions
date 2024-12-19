@@ -1,6 +1,7 @@
 export enum Discovery {
   ARCHIVE = 'archive',
   CRAWLER = 'crawler',
+  GRAPHQL = 'graphql',
   OAS = 'oas'
 }
 

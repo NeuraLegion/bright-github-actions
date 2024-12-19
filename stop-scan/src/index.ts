@@ -7,7 +7,7 @@ const hostname = core.getInput('hostname');
 
 const baseUrl = hostname
   ? `https://${hostname}`
-  : 'https://app.neuralegion.com';
+  : 'https://app.brightsec.com';
 const restc = new rm.RestClient('GitHub Actions', baseUrl);
 
 async function stopScan(uuid: string) {

@@ -37,7 +37,7 @@ const hostname = core.getInput('hostname');
 
 const baseUrl = hostname
   ? `https://${hostname}`
-  : 'https://app.neuralegion.com';
+  : 'https://app.brightsec.com';
 
 const client = new HttpClient('GitHub Actions', [], {
   allowRetries: true,

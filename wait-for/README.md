@@ -42,13 +42,13 @@ More information is available on Bright’s:
 
 ### `api_token`
 
-**Required**. Your Bright API authorization token (key). You can generate it in the **Organization** section in [the Bright app](https://app.neuralegion.com/login). Find more information [here](https://docs.brightsec.com/docs/manage-your-organization#manage-organization-apicli-authentication-tokens).
+**Required**. Your Bright API authorization token (key). You can generate it in the **Organization** section in [the Bright app](https://app.brightsec.com/login). Find more information [here](https://docs.brightsec.com/docs/manage-your-organization#manage-organization-apicli-authentication-tokens).
 
-_Example:_ `api_token: ${{ secrets.NEURALEGION_TOKEN }}`
+_Example:_ `api_token: ${{ secrets.BRIGHT_TOKEN }}`
 
 ### `scan`
 
-**Required**. ID of an existing scan to be restarted. You can get the scan ID in the Scans section in [the Bright app](https://app.neuralegion.com/login).
+**Required**. ID of an existing scan to be restarted. You can get the scan ID in the Scans section in [the Bright app](https://app.brightsec.com/login).
 
 _Example:_ `scan: ${{ steps.start.outputs.id }}`
 
@@ -100,7 +100,7 @@ start_and_wait_scan:
       id: start
       uses: NeuraLegion/bright-github-actions/run-scan@master
       with:
-        api_token: ${{ secrets.NEURALEGION_TOKEN }}
+        api_token: ${{ secrets.BRIGHT_TOKEN }}
         name: GitHub scan ${{ github.sha }}
         discovery_types: |
           [ "crawler", "archive" ]
@@ -116,7 +116,7 @@ start_and_wait_scan:
       id: wait
       uses: NeuraLegion/bright-github-actions/wait-for@master
       with:
-        api_token: ${{ secrets.NEURALEGION_TOKEN }}
+        api_token: ${{ secrets.BRIGHT_TOKEN }}
         scan: ${{ steps.start.outputs.id }}
         wait_for: any
         timeout: 55
