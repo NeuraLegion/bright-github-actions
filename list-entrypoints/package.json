@@ -29,7 +29,10 @@
     "ncc": "^0.3.6"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.10.8",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^8.56.0",
     "husky": "^8.0.3",
     "is-ci": "^4.1.0",
     "lint-staged": "^15.2.0",
