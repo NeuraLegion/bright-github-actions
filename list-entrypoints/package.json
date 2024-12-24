@@ -1,0 +1,52 @@
+{
+  "name": "list-entrypoints",
+  "version": "0.1.0",
+  "description": "This action lists project entrypoints in Bright Security platform",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && npm run pack",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "pack": "ncc build dist/entrypoints/index.js",
+    "prepare": "is-ci || husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeuraLegion/bright-github-actions.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NeuraLegion/bright-github-actions/issues"
+  },
+  "homepage": "https://github.com/NeuraLegion/bright-github-actions/tree/main/list-entrypoints#readme",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^5.0.3",
+    "@actions/http-client": "^2.2.3",
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^9.17.0",
+    "ncc": "^0.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "husky": "^8.0.1",
+    "is-ci": "^3.0.1",
+    "lint-staged": "^13.0.0",
+    "prettier": "^2.6.2",
+    "typescript": "^4.7.3"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
