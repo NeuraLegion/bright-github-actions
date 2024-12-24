@@ -16,7 +16,7 @@ jobs:
     env:
       HUSKY: 0
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Get changed directories
         id: set-matrix
@@ -35,10 +35,10 @@ jobs:
       fail-fast: false  # Continue with other actions even if one fails
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -68,12 +68,12 @@ jobs:
     env:
       HUSKY: 0
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
       

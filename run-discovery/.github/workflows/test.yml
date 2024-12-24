@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: node:20
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci && npm install -g @vercel/ncc
       - name: Build release
@@ -22,7 +22,7 @@ jobs:
           cp README.md release/
           cp action.yml release/
           cp -R dist/ release/dist/
-      - name: Start Bright Discovery 🏁
+      - name: Start Bright Discovery 
         id: discovery
         uses: ./release
         with:
@@ -36,7 +36,7 @@ jobs:
             [ "https://brokencrystals.com" ]
           hosts_filter: |
             [ ]
-      - name: Stop the discovery 🛑
+      - name: Stop the discovery 
         id: stop
         uses: NeuraLegion/bright-github-actions/stop-discovery@release
         with:
@@ -44,7 +44,7 @@ jobs:
           discovery_id: ${{ steps.discovery.outputs.id }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
-      - name: Rerun Bright Discovery 🏁
+      - name: Rerun Bright Discovery 
         id: discovery-rerun
         uses: ./release
         with:
@@ -53,7 +53,7 @@ jobs:
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
           restart_discovery_id: ${{ steps.discovery.outputs.id }}
-      - name: Stop the restarted discovery 🛑
+      - name: Stop the restarted discovery 
         id: stop-rerun
         uses: NeuraLegion/bright-github-actions/stop-discovery@release
         with:

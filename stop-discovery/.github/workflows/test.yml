@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Install packages
         run: apt-get update && apt-get install -y rsync git
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci && npm install -g @vercel/ncc
       - name: Build release
@@ -22,7 +22,7 @@ jobs:
           cp README.md release/
           cp action.yml release/
           cp -R dist/ release/dist/
-      - name: Start Bright Discovery 🏁
+      - name: Start Bright Discovery 
         id: discovery
         uses: NeuraLegion/bright-github-actions/run-discovery@release
         with:
@@ -36,7 +36,7 @@ jobs:
             [ "https://brokencrystals.com" ]
           hosts_filter: |
             [ ]
-      - name: Stop the discovery 🛑
+      - name: Stop the discovery 
         id: stop
         uses: ./release
         with:
