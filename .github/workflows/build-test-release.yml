@@ -102,5 +102,7 @@ jobs:
             - stop-discovery
             - stop-scan
             - wait-for
+            - wait-for-discovery
+            - list-entrypoints
           draft: false
           prerelease: false
