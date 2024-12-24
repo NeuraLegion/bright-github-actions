@@ -1,91 +1,75 @@
-import { HttpClient } from "@actions/http-client";
-import * as core from "@actions/core";
+import { getInput, setOutput, setFailed } from '@actions/core';
+import { HttpClient } from '@actions/http-client';
 
-export interface ListEntryPoints {
-  projectId: string;
-  limit: number;
+interface EntrypointResponse {
+  nextId?: string;
+  nextCreatedAt?: string;
+  items: Array<{
+    id: string;
+    name: string;
+    url: string;
+  }>;
 }
 
-const apiToken = core.getInput("api_token", { required: true });
-const hostname = core.getInput("hostname");
-const projectId = core.getInput("project_id");
-const limit = core.getInput("limit");
+async function run(): Promise<void> {
+  try {
+    const apiToken = getInput('api_token', { required: true });
+    const hostname = getInput('hostname');
+    const projectId = getInput('project_id', { required: true });
+    const limit = getInput('limit');
 
-const baseUrl = hostname ? `https://${hostname}` : "https://app.brightsec.com";
+    const baseUrl = hostname || 'https://app.brightsec.com';
+    const client = new HttpClient('GitHub Actions', undefined, {
+      headers: {
+        Authorization: `api-key ${apiToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
-const entrypointsPaginationBatchSize = 50;
+    const entrypoints: Array<{
+      id: string;
+      name: string;
+      url: string;
+    }> = [];
 
-const client = new HttpClient("GitHub Actions", [], {
-  allowRetries: true,
-  maxRetries: 5,
-  headers: { authorization: `Api-Key ${apiToken}` },
-});
+    let nextId: string | undefined;
+    let nextCreatedAt: string | undefined;
 
-export interface EntryPoint {
-  id: string;
-  method: string;
-  url: string;
-  responseStatus: number;
-  connectivity: string;
-  lastUpdated: string;
-  lastEdited: string;
-  lastValidated: string;
-  parametersCount: number;
-  responseTime: number;
-  status: string;
-  openIssuesCount: number;
-  closedIssuesCount: number;
-  createdAt: string;
-}
+    do {
+      const params = new URLSearchParams();
+      params.append('projectId', projectId);
+      if (limit) {
+        params.append('limit', limit);
+      }
+      if (nextId) {
+        params.append('nextId', nextId);
+      }
+      if (nextCreatedAt) {
+        params.append('nextCreatedAt', nextCreatedAt);
+      }
 
-async function listEntrypoints(config: ListEntryPoints): Promise<EntryPoint[]> {
-  let remaining = config.limit;
-  const data: EntryPoint[] = [];
+      const response = await client.get(
+        `${baseUrl}/api/v1/entrypoints?${params.toString()}`
+      );
 
-  let nextId: string | undefined = undefined;
-  let nextCreatedAt: string | undefined = undefined;
+      const responseBody = await response.readBody();
+      const data = JSON.parse(responseBody) as EntrypointResponse;
 
-  while (remaining > 0) {
-    const url = new URL(
-      `${baseUrl}/api/v2/projects/${config.projectId}/entry-points`
-    );
+      entrypoints.push(...data.items);
 
-    url.searchParams.set(
-      "limit",
-      Math.min(remaining, entrypointsPaginationBatchSize).toString()
-    );
-    if (nextId !== undefined) {
-      url.searchParams.set("nextId", nextId);
+      nextId = data.nextId;
+      nextCreatedAt = data.nextCreatedAt;
+    } while (nextId && nextCreatedAt);
+
+    setOutput('entrypoints', JSON.stringify(entrypoints));
+    setOutput('projectId', projectId);
+  } catch (error) {
+    if (error instanceof Error) {
+      setFailed(error.message);
+    } else {
+      setFailed('An unknown error occurred');
     }
-
-    if (nextCreatedAt !== undefined) {
-      url.searchParams.set("nextCreatedAt", nextCreatedAt);
-    }
-
-    const resp = await client.get(url.toString());
-
-    const body = await resp.readBody();
-
-    const dataItems : { items: EntryPoint[] } = JSON.parse(body);
-
-    const items = dataItems.items;
-
-    if (!items.length) {
-      break;
-    }
-
-    data.push(...items);
-
-    ({ id: nextId, createdAt: nextCreatedAt } = items[items.length - 1]);
-
-    remaining -= entrypointsPaginationBatchSize;
   }
-
-  return data;
 }
 
-core.setOutput(
-  "entrypoints",
-  listEntrypoints({ projectId, limit: Number(limit) })
-);
-core.setOutput("projectId", projectId);
+void run();
