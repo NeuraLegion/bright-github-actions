@@ -94,9 +94,9 @@ URL of the resulting scan.
 ```yml
 start_and_wait_scan:
   runs-on: ubuntu-latest
-  name: A job to run a NeuraLegion scan
+  name: A job to Run a Bright Security scan
   steps:
-    - name: Start NeuraLegion Scan 🏁
+    - name: Bright Security Scan 🏁
       id: start
       uses: NeuraLegion/bright-github-actions/run-scan@master
       with:

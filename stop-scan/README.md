@@ -59,7 +59,7 @@ _Example:_ `scan: ${{ steps.start.outputs.id }}`
 ```yml
 start_and_stop_scan:
   runs-on: ubuntu-latest
-  name: A job to run a NeuraLegion scan
+  name: A job to Run a Bright Security scan
   steps:
     - name: 🏁 Start NeuraLegion Scan
       id: start

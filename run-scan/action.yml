@@ -1,5 +1,5 @@
-name: 'Run a NeuraLegion Scan'
-description: 'Run a NeuraLegion scan right in GitHub Action'
+name: 'Run a Bright Security Scan'
+description: 'Run a Bright Security scan right in GitHub Action'
 branding:
   icon: 'upload-cloud'
   color: 'blue'
@@ -20,7 +20,7 @@ inputs:
     description: 'HAR-file ID'
     required: false
   discovery_types:
-    description: 'Array of discovery types. Can be: archive, crawler, oas, graphql'
+    description: 'Array of discovery types. Possible values: archive, crawler, oas, graphql'
     required: false
   crawler_urls:
     description: 'Crawler URLs'
