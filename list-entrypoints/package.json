@@ -4,7 +4,7 @@
   "description": "This action lists project entrypoints in Bright Security platform",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run pack",
+    "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
