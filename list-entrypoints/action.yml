@@ -1,0 +1,25 @@
+name: 'List project entrypoints'
+description: "List project entrypoints"
+inputs:
+  api_token:
+    description: 'Api Token. You can generate it in Organization section'
+    required: true
+  hostname:
+    description: 'Hostname. Default is app.brightsec.com'
+    required: false
+  project_id:
+    description: 'Project ID'
+    required: true
+  limit:
+    description: 'Maximum number of entrypoints'
+    required: false
+    default: 100
+
+outputs:
+  projectId:
+    description: 'id of the project'
+  entrypoints:
+    description: 'list of entrypoints in JSON format'
+runs:
+  using: 'node20'
+  main: 'dist/entrypoints/index.js'

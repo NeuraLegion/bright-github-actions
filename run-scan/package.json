@@ -1,0 +1,33 @@
+{
+  "name": "run-scan",
+  "version": "0.1.0",
+  "description": "This action runs a new security scan in Bright, or reruns an existing one.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "pack": "ncc build dist/index.js"
+  },
+  "keywords": [
+    "github",
+    "actions",
+    "scan",
+    "security",
+    "dast",
+    "iast"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/github": "^5.0.3",
+    "@actions/http-client": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.8",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vercel/ncc": "^0.38.3"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "wait-for",
+  "version": "0.1.0",
+  "description": "This action polls a Bright scan until it returns a detected issue, or its time runs out.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --check src",
+    "pack": "ncc build dist/index.js"
+  },
+  "keywords": [
+    "github",
+    "actions",
+    "scan",
+    "security",
+    "dast",
+    "iast"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/github": "^5.0.0",
+    "axios": "^1.7.9",
+    "axios-retry": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.8",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vercel/ncc": "^0.38.3"
+  }
+}
