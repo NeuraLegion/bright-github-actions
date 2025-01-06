@@ -23,6 +23,7 @@ export interface Config {
   projectId?: string;
   hostsFilter?: string[];
   tests?: TestType[];
+  entryPointIds?: string[];
 }
 
 const invalidUrlProtocols: ReadonlySet<string> = new Set<string>([
