@@ -35,6 +35,7 @@ const module_in = core.getInput('module');
 const hostsFilter = getArray('hosts_filter');
 const type = core.getInput('type');
 const hostname = core.getInput('hostname');
+const entrypoints = getArray('entrypoints');
 
 const baseUrl = hostname ? `https://${hostname}` : 'https://app.brightsec.com';
 
@@ -111,10 +112,12 @@ if (restartScanID) {
     ? [Discovery.ARCHIVE]
     : discoveryTypesIn;
   const uniqueTests = tests ? [...new Set(tests)] : undefined;
+
   const config: Config = {
     name,
     discoveryTypes,
     module,
+    entryPointIds: entrypoints,
     ...(crawlerUrls ? { crawlerUrls } : {}),
     ...(fileId ? { fileId } : {}),
     ...(projectId ? { projectId } : {}),

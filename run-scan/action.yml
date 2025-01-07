@@ -44,6 +44,9 @@ inputs:
   tests:
     description: 'A list of tests which you want to run during a scan.'
     required: false
+  entrypoints:
+    description: 'A list of entrypoints which you want to scan.'
+    required: false
 
 outputs:
   url:
