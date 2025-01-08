@@ -13,26 +13,50 @@ on:
     - cron: "0 0 * * THU"
 
 jobs:
-  wait_for:
+  release:
+    name: test run-scan
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        working-directory: ./run-scan
+        run: npm ci && npm install -g @vercel/ncc
+
+      - name: Build release
+        working-directory: ./run-scan
+        run: npm run build && npm run pack
+
+      - name: Bright Security Scan 🏁
+        uses: ./run-scan
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          name: GitHub scan ${{ github.sha }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          module: "dast"
+          hosts_filter: |
+            [ ]
+
+  wait-for:
     name: Wait for any issues, gh-int + code_scanning_alerts on
     runs-on: ubuntu-latest
     container: node:20
     steps:
       - uses: actions/checkout@v4
-      - name: Scan Start
-        id: start
-        uses: NeuraLegion/bright-github-actions/run-scan@release
-        with:
-          api_token: ${{ secrets.BRIGHT_TOKEN}}
-          hostname: app.brightsec.com
-          name: Bright Scan - ${{ github.sha }}
-          discovery_types: |
-            [ "crawler" ]
-          crawler_urls: |
-            [ "https://brokencrystals.com" ]
+      - name: Install dependencies
+        working-directory: ./wait-for
+        run: npm ci && npm install -g @vercel/ncc
+
+      - name: Build release
+        working-directory: ./wait-for
+        run: npm run build && npm run pack
+
       - name: Wait for breakpoint
         id: wait
-        uses: NeuraLegion/bright-github-actions/wait-for@release
+        uses: ./wait-for
         with:
           api_token:  ${{ secrets.BRIGHT_TOKEN }}
           hostname: app.brightsec.com
