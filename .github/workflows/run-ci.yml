@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  run-scan:
     name: test run-scan
     runs-on: ubuntu-latest
     container: node:20
@@ -45,6 +45,7 @@ jobs:
     name: Wait for any issues, gh-int + code_scanning_alerts on
     runs-on: ubuntu-latest
     container: node:20
+    timeout-minutes: 11
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
