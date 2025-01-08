@@ -51,9 +51,27 @@ jobs:
         working-directory: ./wait-for
         run: npm ci && npm install -g @vercel/ncc
 
-      - name: Build release
+      - name: Build wait-for
         working-directory: ./wait-for
         run: npm run build && npm run pack
+
+      - name: Build run-scan
+        working-directory: ./run-scan
+        run: npm run build && npm run pack
+
+      - name: Scan
+        id: start
+        uses: ./run-scan
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          name: GitHub scan ${{ github.sha }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          module: "dast"
+          hosts_filter: |
+            [ ]
 
       - name: Wait for breakpoint
         id: wait
