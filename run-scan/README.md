@@ -1,5 +1,7 @@
 # Run a Bright Scan
 
+bla bla bla
+
 This action runs a new security scan in Bright, or reruns an existing one.
 
 ### Build Secure Apps & APIs. Fast.
