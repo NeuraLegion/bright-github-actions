@@ -1,4 +1,4 @@
-name: CI / Automated testing
+name: Test run-scan
 
 on:
   pull_request:
