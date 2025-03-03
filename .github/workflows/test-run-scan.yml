@@ -11,26 +11,45 @@ jobs:
     runs-on: ubuntu-latest
     container: node:20
     steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: npm ci && npm install -g @vercel/ncc
-    - name: Build release
-      run: npm run build && npm run pack
-    - name: Copy files to release
-      run: |
-        mkdir release
-        cp README.md release/
-        cp action.yml release/
-        cp -R dist/ release/dist/
-    - name: Bright Security Scan 🏁
-      uses: ./release
-      with:
-        api_token: ${{ secrets.BRIGHT_TOKEN }}
-        name: GitHub scan ${{ github.sha }}
-        discovery_types: |
-          [ "crawler" ]
-        crawler_urls: |
-          [ "https://brokencrystals.com" ]
-        module: "dast"
-        hosts_filter: |
-          [ ]
+      - uses: actions/checkout@v4
+      
+      - name: Install root dependencies
+        run: npm ci
+      
+      - name: Install action dependencies
+        working-directory: run-scan
+        run: npm ci
+        
+      - name: Install ncc
+        run: npm install -g @vercel/ncc
+        
+      - name: Build action
+        working-directory: run-scan
+        run: npm run build
+        
+      - name: Pack action (if script exists)
+        working-directory: run-scan
+        run: |
+          if grep -q "\"pack\"" "package.json"; then
+            npm run pack
+          fi
+          
+      - name: Copy files to release
+        run: |
+          mkdir -p release
+          cp run-scan/README.md release/
+          cp run-scan/action.yml release/
+          cp -R run-scan/dist/ release/dist/
+          
+      - name: Bright Security Scan 🏁
+        uses: ./release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          name: GitHub scan ${{ github.sha }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          module: "dast"
+          hosts_filter: |
+            [ ]
