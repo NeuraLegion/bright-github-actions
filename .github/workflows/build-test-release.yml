@@ -71,7 +71,7 @@ jobs:
       
       # Upload the built action as an artifact
       - name: Upload action artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.action }}-build
           path: ${{ matrix.action }}
@@ -90,7 +90,7 @@ jobs:
       
       # Download all artifacts
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: downloaded-artifacts
       
