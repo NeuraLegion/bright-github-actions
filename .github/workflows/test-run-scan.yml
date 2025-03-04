@@ -27,6 +27,7 @@ jobs:
           cp run-scan/action.yml release/
           cp -R run-scan/dist/ release/dist/
       - name: Bright Security Scan 🏁
+        id: scan
         uses: ./release
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN }}

@@ -50,3 +50,10 @@ jobs:
           scan: ${{ steps.scan.outputs.id }}
           wait_for: any
           timeout: 340 # in general cases we'll have a timeout and it is good for this test
+      - name: Stop the scan
+        id: stop
+        uses: NeuraLegion/bright-github-actions/stop-scan@release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          scan: ${{ steps.scan.outputs.id }}
+          hostname: ${{ vars.HOSTNAME }}
