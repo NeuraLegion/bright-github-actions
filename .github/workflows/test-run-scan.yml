@@ -10,6 +10,8 @@ jobs:
     name: Build GitHub Action
     runs-on: ubuntu-latest
     container: node:20
+    env:
+      HUSKY: 0
     steps:
       - uses: actions/checkout@v4
       - name: Install action dependencies

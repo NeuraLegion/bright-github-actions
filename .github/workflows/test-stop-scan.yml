@@ -3,13 +3,15 @@ name: Test stop-scan
 on:
   push:
     branches:
-      - master
+      - '**'
 
 jobs:
   release:
     name: Build GitHub Action
     runs-on: ubuntu-latest
     container: node:20
+    env:
+      HUSKY: 0
     steps:
       - uses: actions/checkout@v4
       - name: Install action dependencies
