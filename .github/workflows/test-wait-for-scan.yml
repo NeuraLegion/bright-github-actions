@@ -1,4 +1,4 @@
-name: CI / Automated testing
+name: Test wait-for-scan
 
 on:
   pull_request:
@@ -12,21 +12,24 @@ jobs:
     container: node:20
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
+      - name: Install action dependencies
+        working-directory: wait-for
         run: npm ci && npm install -g @vercel/ncc
       - name: Build release
-        run: npm run lint && npm run build && npm run pack
+        working-directory: wait-for
+        run: npm run build && npm run pack
       - name: Copy files to release
         run: |
-          mkdir release
-          cp README.md release/
-          cp action.yml release/
-          cp -R dist/ release/dist/
+          mkdir -p release
+          cp wait-for/README.md release/
+          cp wait-for/action.yml release/
+          cp -R wait-for/dist/ release/dist/
       - name: Bright Security Scan 🏁
         id: scan
         uses: NeuraLegion/bright-github-actions/run-scan@release
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
           name: GitHub scan ${{ github.sha }}
           discovery_types: |
             [ "crawler" ]
@@ -41,6 +44,7 @@ jobs:
         continue-on-error: true
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
           scan: ${{ steps.scan.outputs.id }}
           wait_for: any
           timeout: 340 # in general cases we'll have a timeout and it is good for this test

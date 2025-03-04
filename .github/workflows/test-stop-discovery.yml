@@ -1,3 +1,5 @@
+name: Test stop-discovery
+
 on:
   push:
     branches:
@@ -9,19 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     container: node:20
     steps:
-      - name: Install packages
-        run: apt-get update && apt-get install -y rsync git
       - uses: actions/checkout@v4
-      - name: Install dependencies
+      - name: Install action dependencies
+        working-directory: stop-discovery
         run: npm ci && npm install -g @vercel/ncc
       - name: Build release
-        run: npm run lint && npm run build && npm run pack
+        working-directory: stop-discovery
+        run: npm run build && npm run pack
       - name: Copy files to release
         run: |
-          mkdir release
-          cp README.md release/
-          cp action.yml release/
-          cp -R dist/ release/dist/
+          mkdir -p release
+          cp stop-discovery/README.md release/
+          cp stop-discovery/action.yml release/
+          cp -R stop-discovery/dist/ release/dist/
       - name: Start Bright Discovery 
         id: discovery
         uses: NeuraLegion/bright-github-actions/run-discovery@release

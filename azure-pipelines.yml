@@ -1,9 +1,0 @@
-# Starter pipeline
-- task: NexPloitScan@3
-  inputs:
-    apiToken: 'enter-your-bright-api-token'
-    hostname: 'brokencrystals.com'
-    module: 'dast'
-    discoveryTypes: 'crawler'
-    crawlerUrls: 'https://brokencrystals.com'
-    scanTests: 'angular_csti,jwt,date_manipulation,cookie_security,csrf,directory_listing,dom_xss,file_upload,full_path_disclosure,header_security,http_method_fuzzing,secret_tokens,version_control_systems,wordpress'

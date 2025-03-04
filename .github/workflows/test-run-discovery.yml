@@ -14,18 +14,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install action dependencies
         working-directory: run-discovery
-        run: npm ci
-      - name: Install ncc
-        run: npm install -g @vercel/ncc
-      - name: Build action
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
         working-directory: run-discovery
-        run: npm run build
-      - name: Pack action (if script exists)
-        working-directory: run-discovery
-        run: |
-          if grep -q "\"pack\"" "package.json"; then
-            npm run pack
-          fi
+        run: npm run build && npm run pack
       - name: Copy files to release
         run: |
           mkdir -p release
