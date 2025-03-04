@@ -12,39 +12,31 @@ jobs:
     container: node:20
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install root dependencies
-        run: npm ci
-      
       - name: Install action dependencies
         working-directory: run-scan
         run: npm ci
-        
       - name: Install ncc
         run: npm install -g @vercel/ncc
-        
       - name: Build action
         working-directory: run-scan
         run: npm run build
-        
       - name: Pack action (if script exists)
         working-directory: run-scan
         run: |
           if grep -q "\"pack\"" "package.json"; then
             npm run pack
           fi
-          
       - name: Copy files to release
         run: |
           mkdir -p release
           cp run-scan/README.md release/
           cp run-scan/action.yml release/
           cp -R run-scan/dist/ release/dist/
-          
       - name: Bright Security Scan 🏁
         uses: ./release
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
           name: GitHub scan ${{ github.sha }}
           discovery_types: |
             [ "crawler" ]
@@ -53,3 +45,10 @@ jobs:
           module: "dast"
           hosts_filter: |
             [ ]
+      - name: Stop the scan
+        id: stop
+        uses: NeuraLegion/bright-github-actions/stop-scan@release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          scan_id: ${{ steps.scan.outputs.id }}
+          hostname: ${{ vars.HOSTNAME }}
