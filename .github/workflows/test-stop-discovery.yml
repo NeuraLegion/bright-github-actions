@@ -30,7 +30,7 @@ jobs:
         id: discovery
         uses: NeuraLegion/bright-github-actions/run-discovery@release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           name: GitHub discovery ${{ github.sha }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
@@ -44,7 +44,7 @@ jobs:
         id: stop
         uses: ./release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           discovery_id: ${{ steps.discovery.outputs.id }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}

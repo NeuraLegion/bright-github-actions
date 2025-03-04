@@ -44,5 +44,5 @@ jobs:
         uses: NeuraLegion/bright-github-actions/stop-scan@release
         with:
           api_token: ${{ secrets.BRIGHT_TOKEN }}
-          scan_id: ${{ steps.scan.outputs.id }}
+          scan: ${{ steps.scan.outputs.id }}
           hostname: ${{ vars.HOSTNAME }}

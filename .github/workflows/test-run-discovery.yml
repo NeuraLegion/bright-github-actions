@@ -30,7 +30,7 @@ jobs:
         id: discovery
         uses: ./release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           name: GitHub discovery ${{ github.sha }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
@@ -44,7 +44,7 @@ jobs:
         id: stop
         uses: NeuraLegion/bright-github-actions/stop-discovery@release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           discovery_id: ${{ steps.discovery.outputs.id }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
@@ -52,7 +52,7 @@ jobs:
         id: discovery-rerun
         uses: ./release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           name: GitHub discovery rerun ${{ github.sha }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
@@ -61,7 +61,7 @@ jobs:
         id: stop-rerun
         uses: NeuraLegion/bright-github-actions/stop-discovery@release
         with:
-          api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
           discovery_id: ${{ steps.discovery-rerun.outputs.id }}
           project_id: ${{ vars.PROJECT_ID }}
           hostname: ${{ vars.HOSTNAME }}
