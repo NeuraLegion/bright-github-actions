@@ -107,7 +107,10 @@ jobs:
             cp -f $action_dir/action.yml release/$action_name/
             cp -f $action_dir/README.md release/$action_name/
             cp -R $action_dir/dist release/$action_name/
-            cp $action_dir/LICENSE release/$action_name/
+            # Copy LICENSE if exists
+            if [ -f "$action_dir/LICENSE" ]; then
+              cp $action_dir/LICENSE release/$action_name/
+            fi
           done
 
       # Deploy to release branch
