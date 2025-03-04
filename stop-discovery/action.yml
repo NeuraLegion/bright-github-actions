@@ -1,0 +1,21 @@
+name: 'Bright Stop Discovery'
+description: 'Stops Bright Discovery'
+branding:
+  icon: stop-circle
+  color: blue
+inputs:
+  api_token:
+    description: 'Api Token. You can generate it in Organization section'
+    required: true
+  discovery_id:
+    description: 'Discovery ID to wait for'
+    required: true
+  project_id:
+    description: 'ID of the project that the discovery belongs to'
+    required: true
+  hostname:
+    description: 'Hostname. Default is app.brightsec.com'
+    required: false
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

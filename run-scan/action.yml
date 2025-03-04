@@ -1,0 +1,58 @@
+name: 'Run a Bright Security Scan'
+description: 'Run a Bright Security scan right in GitHub Action'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  api_token:
+    description: 'Api Token. You can generate it in Organization section'
+    required: true
+  restart_scan:
+    description: 'Scan ID to restart'
+    required: false
+  hostname:
+    description: 'Hostname. Default is app.brightsec.com'
+    required: false
+  project_id:
+    description: 'Project ID for Scan'
+    required: false
+  file_id:
+    description: 'HAR-file ID'
+    required: false
+  discovery_types:
+    description: 'Array of discovery types. Possible values: archive, crawler, oas, graphql'
+    required: false
+  crawler_urls:
+    description: 'Crawler URLs'
+    required: false
+  exclude_params:
+    description: 'A list of regex patterns for parameter names you would like to ignore during the tests.'
+    required: false
+  exclude_entry_points:
+    description: 'A list of JSON strings that contain patterns for entry points you would like to ignore during the tests. Pass an empty array to remove default exclusions. To apply patterns for all HTTP methods, you can set an empty array to "methods"'
+    required: false
+  module:
+    description: 'Possible values: *dast*, *fuzzer*'
+    required: false
+  hosts_filter:
+    description: 'Hosts filter'
+    required: false
+  name:
+    description: 'Scan Name'
+    default: 'GitHub Scan'
+    required: false
+  tests:
+    description: 'A list of tests which you want to run during a scan.'
+    required: false
+  entrypoints:
+    description: 'A list of entrypoints which you want to scan.'
+    required: false
+
+outputs:
+  url:
+    description: 'Url of the resulting scan'
+  id:
+    description: 'Scan ID'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
