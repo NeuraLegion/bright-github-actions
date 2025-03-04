@@ -1,0 +1,52 @@
+name: Test wait-for-scan
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Build GitHub Action
+    runs-on: ubuntu-latest
+    container: node:20
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install action dependencies
+        working-directory: wait-for
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
+        working-directory: wait-for
+        run: npm run build && npm run pack
+      - name: Copy files to release
+        run: |
+          mkdir -p release
+          cp wait-for/README.md release/
+          cp wait-for/action.yml release/
+          cp -R wait-for/dist/ release/dist/
+      - name: Bright Security Scan 🏁
+        id: scan
+        uses: NeuraLegion/bright-github-actions/run-scan@release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
+          name: GitHub scan ${{ github.sha }}
+          discovery_types: |
+            [ "crawler" ]
+          module: "dast"
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          hosts_filter: |
+            [ ]
+      - name: Wait for any issues ⏳
+        id: wait
+        uses: ./release
+        continue-on-error: true
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
+          scan: ${{ steps.scan.outputs.id }}
+          wait_for: any
+          timeout: 120 # in general cases we'll have a timeout and it is good for this test

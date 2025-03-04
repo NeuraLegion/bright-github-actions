@@ -28,6 +28,10 @@
   "devDependencies": {
     "@types/node": "^20.10.8",
     "@typescript-eslint/parser": "^6.15.0",
-    "@vercel/ncc": "^0.38.3"
+    "@vercel/ncc": "^0.38.3",
+    "prettier": "^3.4.2",
+    "husky": "^9.1.7",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0"
   }
 }

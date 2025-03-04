@@ -3,10 +3,6 @@ name: Build, Test and Release
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  # Allow manual trigger
-  workflow_dispatch:
 
 jobs:
   detect-changes:
@@ -80,7 +76,6 @@ jobs:
   # Update release branch
   update-release-branch:
     needs: build-and-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
