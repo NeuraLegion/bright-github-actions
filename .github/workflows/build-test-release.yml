@@ -60,7 +60,7 @@ jobs:
           if [ -f "package.json" ] && grep -q "\"test\"" "package.json"; then
             npm test
           fi
-      
+
       # Create package for each action
       - name: Package action
         working-directory: ${{ matrix.action }}
@@ -68,7 +68,7 @@ jobs:
           if [ -f "package.json" ] && grep -q "\"pack\"" "package.json"; then
             npm run pack
           fi
-      
+
       # Upload the built action as an artifact
       - name: Upload action artifact
         uses: actions/upload-artifact@v4
@@ -84,63 +84,42 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: release
-          fetch-depth: 0
-      
+
       # Download all artifacts
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: downloaded-artifacts
-      
+
       # Prepare release directory structure
       - name: Prepare release directory
         run: |
-          mkdir -p release-temp
+          mkdir -p release
           
           # For each action directory
           for action_dir in downloaded-artifacts/*-build; do
             action_name=$(basename $action_dir | sed 's/-build$//')
             
             # Create directory for this action
-            mkdir -p release-temp/$action_name
+            mkdir -p release/$action_name
             
             # Copy required files
-            cp -f $action_dir/action.yml release-temp/$action_name/ || echo "No action.yml found for $action_name"
-            cp -f $action_dir/README.md release-temp/$action_name/ || echo "No README.md found for $action_name"
-            
-            # Copy dist directory if exists
-            if [ -d "$action_dir/dist" ]; then
-              cp -R $action_dir/dist release-temp/$action_name/
-            fi
-            
+            cp -f $action_dir/action.yml release/$action_name/
+            cp -f $action_dir/README.md release/$action_name/
+            cp -R $action_dir/dist release/$action_name/
             # Copy LICENSE if exists
             if [ -f "$action_dir/LICENSE" ]; then
-              cp $action_dir/LICENSE release-temp/$action_name/
+              cp $action_dir/LICENSE release/$action_name/
             fi
           done
-      
-      # Clear existing contents but preserve git history
-      - name: Clear existing content
-        run: |
-          # Save .git directory
-          find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} \;
-      
-      # Copy new content to root
-      - name: Copy new content
-        run: |
-          cp -R release-temp/* ./
-          rm -rf release-temp
-      
-      # Commit and push changes
-      - name: Commit and push to release branch
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add -A
-          git diff --cached --quiet || git commit -m "Update release branch from main - $(date +%Y-%m-%d-%H%M%S)"
-          git push origin release
+
+      # Deploy to release branch
+      - name: Deploy to release branch
+        uses: JamesIves/github-pages-deploy-action@v4.3.2
+        with:
+          branch: release
+          folder: release
+          clean: false  # Don't remove files that weren't changed
 
   # Create GitHub Release
   create-release:
