@@ -1,0 +1,49 @@
+name: Test run-scan
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  release:
+    name: Build GitHub Action
+    runs-on: ubuntu-latest
+    container: node:20
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install action dependencies
+        working-directory: run-scan
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
+        working-directory: run-scan
+        run: npm run build && npm run pack
+      - name: Copy files to release
+        run: |
+          mkdir -p release
+          cp run-scan/README.md release/
+          cp run-scan/action.yml release/
+          cp -R run-scan/dist/ release/dist/
+      - name: Bright Security Scan 🏁
+        id: scan
+        uses: ./release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
+          name: GitHub scan ${{ github.sha }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://brokencrystals.com" ]
+          module: "dast"
+          hosts_filter: |
+            [ ]
+      - name: Stop the scan
+        id: stop
+        uses: NeuraLegion/bright-github-actions/stop-scan@release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          scan: ${{ steps.scan.outputs.id }}
+          hostname: ${{ vars.HOSTNAME }}
