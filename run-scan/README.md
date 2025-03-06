@@ -183,7 +183,7 @@ ID of the created scan. This ID could then be used to restart the scan, or for t
 steps:
   - name: Bright Security Scan
     id: start
-    uses: NeuraLegion/bright-github-actions/run-scan@v1.1
+    uses: NeuraLegion/bright-github-actions/run-scan@release
     with:
       api_token: ${{ secrets.BRIGHT_TOKEN }}
       name: GitHub scan ${{ github.sha }}
@@ -202,7 +202,7 @@ steps:
 steps:
   - name: Bright Security Scan
     id: start
-    uses: NeuraLegion/bright-github-actions/run-scan@v1.1
+    uses: NeuraLegion/bright-github-actions/run-scan@release
     with:
       api_token: ${{ secrets.BRIGHT_TOKEN }}
       name: GitHub scan ${{ github.sha }}
