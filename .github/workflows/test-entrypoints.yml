@@ -1,0 +1,34 @@
+name: Test entrypoints
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  release:
+    name: Build GitHub Action
+    runs-on: ubuntu-latest
+    container: node:20
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install action dependencies
+        working-directory: list-entrypoints
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
+        working-directory: list-entrypoints
+        run: npm run build && npm run pack
+      - name: Copy files to release
+        run: |
+          mkdir -p release
+          cp list-entrypointsy/README.md release/
+          cp list-entrypoints/action.yml release/
+          cp -R list-entrypoints/dist/ release/dist/
+      - name: List project entrypoints
+        uses: ./release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          hostname: ${{ vars.HOSTNAME }}
+          project_id: ${{ vars.PROJECT_ID }}
