@@ -1,4 +1,4 @@
-name: CI / Automated testing
+name: Test wait-for-discovery
 
 on:
   pull_request:
