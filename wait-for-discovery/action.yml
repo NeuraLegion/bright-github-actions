@@ -1,0 +1,29 @@
+name: Wait for Bright discovery
+description: 'Wait for a Bright discovery to finish'
+branding:
+  icon: clock
+  color: blue
+inputs:
+  api_token:
+    description: 'Api Token. You can generate it in Organization section'
+    required: true
+  discovery_id:
+    description: 'Discovery ID to wait for'
+    required: true
+  project_id:
+    description: 'Project ID of the discovery'
+    required: true
+  hostname:
+    description: 'Hostname. Default is app.brightsec.com'
+    required: false
+  timeout:
+    description: 'Time in seconds for the action to wait for discovery to finish'
+    required: false
+    default: 600
+
+outputs:
+  url:
+    description: 'Url of the resulting discovery'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
