@@ -54,5 +54,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "wait-for-discovery": "^0.1.0"
   }
 }

@@ -1,6 +1,6 @@
-# Stop a Bright Scan
+# Poll status of a Bright Discovery
 
-This action stops a Bright scan.
+This action polls a Bright discovery until it finishes, or its time runs out.
 
 ### Build Secure Apps & APIs. Fast.
 
@@ -42,54 +42,64 @@ More information is available on Bright’s:
 
 ### `api_token`
 
-**Required**. Your Bright API authorization token (key). You can generate it in the **Organization** section in [the Bright app](https://app.brightsec.com/login). Find more information [here](https://docs.brightsec.com/docs/manage-your-organization#manage-organization-apicli-authentication-tokens).
+**Required**. Your Bright API authorization token (key). You can generate it in the **Organization** section in [the Bright app](https://app.neuralegion.com/login). Find more information [here](https://docs.brightsec.com/docs/manage-your-organization#manage-organization-apicli-authentication-tokens).
 
-_Example:_ `api_token: ${{ secrets.BRIGHT_TOKEN }}`
+_Example:_ `api_token: ${{ secrets.BRIGHTSEC_TOKEN }}`
 
-### `scan`
+### `discovery_id`
 
-**Required**. Scan ID to stop.
+**Required**. ID of an existing discovery to be polled.
 
-_Example:_ `scan: ${{ steps.start.outputs.id }}`
+_Example:_ `discovery_id: ${{ steps.start.outputs.id }}`
+
+### `project_id`
+
+**Required**. Provide project-id for the discovery.
+
+_Example:_ `project_id: ${{ vars.PROJECT_ID }}`
+
+### `timeout`
+
+**Required**. Time for polling in seconds.
+
+_Example:_ ` timeout: 55`
+
+## Outputs
+
+### `url`
+
+URL of the resulting discovery.
 
 ## Usage Example
 
-### Stop a previously started scan
+### Poll the results of a previously started discovery
 
 ```yml
-start_and_stop_scan:
+start_and_wait_scan:
   runs-on: ubuntu-latest
-  name: A job to Run a Bright Security scan
+  name: A job to run a Bright discovery
   steps:
-    - name: 🏁 Start NeuraLegion Scan
+    - name: Start Bright discovery 🏁
       id: start
-      uses: NeuraLegion/bright-github-actions/run-scan@release
+      uses: NeuraLegion/bright-github-actions/run-discovery@release
       with:
-        api_token: ${{ secrets.BRIGHT_TOKEN }}
-        name: GitHub scan ${{ github.sha }}
+        api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+        name: GitHub discovery ${{ github.sha }}
+        project_id: ${{ vars.PROJECT_ID }}
         discovery_types: |
-          [ "crawler", "archive" ]
+          [ "crawler" ]
         crawler_urls: |
           [ "https://juice-shop.herokuapp.com" ]
-        file_id: LiYknMYSdbSZbqgMaC9Sj
         hosts_filter: |
           [ ]
-        wait_for: on_high
-    - name: Get the output scan url
-      run: echo "The scan was started on ${{ steps.start.outputs.url }}"
-    - name: ⏳ Wait for any issues
+    - name: Get the output discovery url
+      run: echo "The discovery was started on ${{ steps.start.outputs.url }}"
+    - name: Wait for discovery to finish ⏳
       id: wait
-      uses: NeuraLegion/bright-github-actions/wait-for@release
+      uses: NeuraLegion/bright-github-actions/wait-for-discovery@release
       with:
-        api_token: ${{ secrets.BRIGHT_TOKEN }}
-        scan: ${{ steps.start.outputs.id }}
-        wait_for: any
-        timeout: 100
-    - name: 🛑 Stop the scan
-      if: ${{ always() }}
-      id: stop
-      uses: NeuraLegion/bright-github-actions/stop-scan@release
-      with:
-        api_token: ${{ secrets.BRIGHT_TOKEN }}
-        scan: ${{ steps.start.outputs.id }}
+        api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
+        discovery_id: ${{ steps.start.outputs.id }}
+        project_id: ${{ vars.PROJECT_ID }}
+        timeout: 55
 ```

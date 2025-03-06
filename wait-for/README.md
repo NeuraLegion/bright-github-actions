@@ -98,7 +98,7 @@ start_and_wait_scan:
   steps:
     - name: Bright Security Scan 🏁
       id: start
-      uses: NeuraLegion/bright-github-actions/run-scan@master
+      uses: NeuraLegion/bright-github-actions/run-scan@release
       with:
         api_token: ${{ secrets.BRIGHT_TOKEN }}
         name: GitHub scan ${{ github.sha }}
@@ -114,7 +114,7 @@ start_and_wait_scan:
       run: echo "The scan was started on ${{ steps.start.outputs.url }}"
     - name: Wait for any issues ⏳
       id: wait
-      uses: NeuraLegion/bright-github-actions/wait-for@master
+      uses: NeuraLegion/bright-github-actions/wait-for@release
       with:
         api_token: ${{ secrets.BRIGHT_TOKEN }}
         scan: ${{ steps.start.outputs.id }}

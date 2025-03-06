@@ -1,0 +1,51 @@
+name: Test wait-for-discovery
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Build GitHub Action
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install action dependencies
+        working-directory: wait-for-discovery
+        run: npm ci && npm install -g @vercel/ncc
+      - name: Build release
+        working-directory: wait-for-discovery
+        run: npm run build && npm run pack
+      - name: Copy files to release
+        run: |
+          mkdir -p release
+          cp wait-for-discovery/README.md release/
+          cp wait-for-discovery/action.yml release/
+          cp -R wait-for-discovery/dist/ release/dist/
+      - name: Start Bright Discovery 🏁
+        id: discovery
+        uses: NeuraLegion/bright-github-actions/run-discovery@release
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          name: GitHub discovery ${{ github.sha }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
+          discovery_types: |
+            [ "crawler" ]
+          crawler_urls: |
+            [ "https://security-crawl-maze.app/html/body/form" ]
+          hosts_filter: |
+            [ ]
+      - name: Wait for discovery to finish ⏳
+        id: wait
+        uses: ./release
+        continue-on-error: true
+        with:
+          api_token: ${{ secrets.BRIGHT_TOKEN }}
+          discovery_id: ${{ steps.discovery.outputs.id }}
+          project_id: ${{ vars.PROJECT_ID }}
+          hostname: ${{ vars.HOSTNAME }}
+          timeout: 360 
+

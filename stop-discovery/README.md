@@ -69,7 +69,7 @@ start_and_stop_discovery:
   steps:
     - name: 🏁 Start Bright Discovery
       id: start
-      uses: NeuraLegion/bright-github-actions/run-discovery@master
+      uses: NeuraLegion/bright-github-actions/run-discovery@release
       with:
         api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
         name: GitHub scan ${{ github.sha }}
@@ -85,7 +85,7 @@ start_and_stop_discovery:
       run: echo "The discovery was started on ${{ steps.start.outputs.url }}"
     - name: ⏳ Wait for discovery to finish
       id: wait
-      uses: NeuraLegion/bright-github-actions/wait-for-discovery@master
+      uses: NeuraLegion/bright-github-actions/wait-for-discovery@release
       with:
         api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
         discovery: ${{ steps.start.outputs.id }}
@@ -93,7 +93,7 @@ start_and_stop_discovery:
     - name: 🛑 Stop the discovery
       if: ${{ always() }}
       id: stop
-      uses: NeuraLegion/bright-github-actions/stop-discovery@master
+      uses: NeuraLegion/bright-github-actions/stop-discovery@release
       with:
         api_token: ${{ secrets.BRIGHTSEC_TOKEN }}
         discovery_id: ${{ steps.start.outputs.id }}
