@@ -137,13 +137,13 @@ exclude_params: |
 
 ### `entrypoints`
 
-A list of entry points to be included in the scan.
+A list of entry point ids to be included in the scan.
 
 _Example:_
 
 ```yaml
 entrypoints: |
-  [ "/api/v1/users", "/api/v2/products" ]
+  [ "550e8400-e29b-41d4-a716-446655440000", "7c9e6679-7425-40de-944b-e07fc1f90ae7" ]
 ```
 
 ### `exclude_entry_points`
