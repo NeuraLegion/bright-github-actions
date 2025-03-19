@@ -8,6 +8,8 @@ interface EntrypointResponse {
     id: string;
     name: string;
     url: string;
+    status?: string;
+    connectivity?: string;
   }>;
 }
 
@@ -17,6 +19,8 @@ async function run(): Promise<void> {
     const hostname = getInput('hostname');
     const projectId = getInput('project_id', { required: true });
     const limit = getInput('limit');
+    const connectivity = getInput('connectivity');
+    const status = getInput('status');
 
     const baseUrl = hostname || 'https://app.brightsec.com';
     const client = new HttpClient('GitHub Actions', undefined, {
@@ -30,6 +34,8 @@ async function run(): Promise<void> {
       id: string;
       name: string;
       url: string;
+      status?: string;
+      connectivity?: string;
     }> = [];
 
     let nextId: string | undefined;
@@ -37,7 +43,6 @@ async function run(): Promise<void> {
 
     do {
       const params = new URLSearchParams();
-      params.append('projectId', projectId);
       if (limit) {
         params.append('limit', limit);
       }
@@ -47,15 +52,27 @@ async function run(): Promise<void> {
       if (nextCreatedAt) {
         params.append('nextCreatedAt', nextCreatedAt);
       }
+      if (connectivity) {
+        connectivity.split(',').forEach(value => params.append('connectivity', value.trim()));
+      }
+      if (status) {
+        status.split(',').forEach(value => params.append('status', value.trim()));
+      }
 
       const response = await client.get(
-        `${baseUrl}/api/v1/entrypoints?${params.toString()}`
+        `${baseUrl}/api/v2/projects/${projectId}/entry-points${params.toString() ? `?${params.toString()}` : ''}`
       );
 
       const responseBody = await response.readBody();
       const data = JSON.parse(responseBody) as EntrypointResponse;
 
-      entrypoints.push(...data.items);
+      entrypoints.push(...data.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        url: item.url,
+        status: item.status,
+        connectivity: item.connectivity
+      })));
 
       nextId = data.nextId;
       nextCreatedAt = data.nextCreatedAt;

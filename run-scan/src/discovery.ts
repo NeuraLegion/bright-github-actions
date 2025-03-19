@@ -5,7 +5,7 @@ export enum Discovery {
   OAS = 'oas'
 }
 
-export const validateDiscovery = (discoveryTypes: Discovery[]) => {
+export const validateDiscovery = (discoveryTypes: Discovery[] = []) => {
   if (discoveryTypes.some((x: Discovery) => !isValidDiscovery(x))) {
     throw new Error('Unknown discovery type supplied.');
   }
