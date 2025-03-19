@@ -220,3 +220,4 @@ steps:
       restart_scan: ai3LG8DmVn9Rn1YeqCNRGQ
   - name: Get the output scan url
     run: echo "The scan was started on ${{ steps.start.outputs.url }}"
+```
