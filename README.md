@@ -26,45 +26,6 @@ This repository is a collection of GitHub Actions, with each subfolder containin
 2. Run a CI job in GitHub Actions.
 3. Go to Bright Security app and check if a scan was started.
 
-### Entry Points Parameter Support
-
-The `entrypoints` parameter allows you to specify exact entry points to be included in the scan. 
-
-_Example:_
-```yaml
-entrypoints: |
-  [ "/api/v1/users", "/api/v2/products" ]
-```
-
-To apply patterns for all HTTP methods, you can set an empty array to `methods`:
-
-```yaml
-entrypoints: |
-  [ { "methods": [], "patterns": [ "/api/v1/users", "/api/v2/products" ] } ]
-```
-
-Additionally, you can exclude specific entry points from the scan using the `exclude_entry_points` parameter:
-
-```yaml
-exclude_entry_points: |
-  [ { "methods": [ "POST" ], "patterns": [ "users\/.+\/?$" ] } ]
-```
-
-To remove default exclusions pass an empty array as follows:
-
-_Example:_
-```yaml
-exclude_entry_points: |
-  []
-```
-
-To apply patterns for all HTTP methods, you can set an empty array to `methods`:
-
-```yaml
-exclude_entry_points: |
-  [ { "methods": [], "patterns": [ "users\/.+\/?$" ] } ]
-```
-
 ## Development
 
 ### Code Quality

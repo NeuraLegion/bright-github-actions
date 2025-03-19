@@ -135,6 +135,17 @@ exclude_params: |
   [ "userId", "orgId" ]
 ```
 
+### `entrypoints`
+
+A list of entry points to be included in the scan.
+
+_Example:_
+
+```yaml
+entrypoints: |
+  [ "/api/v1/users", "/api/v2/products" ]
+```
+
 ### `exclude_entry_points`
 
 A list of JSON strings that contain patterns for entry points you would like to ignore during the tests.
@@ -209,4 +220,3 @@ steps:
       restart_scan: ai3LG8DmVn9Rn1YeqCNRGQ
   - name: Get the output scan url
     run: echo "The scan was started on ${{ steps.start.outputs.url }}"
-```
