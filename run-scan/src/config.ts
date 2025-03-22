@@ -15,7 +15,7 @@ export interface Exclusions {
 
 export interface Config {
   name: string;
-  discoveryTypes: Discovery[];
+  discoveryTypes?: Discovery[];
   exclusions?: Exclusions;
   module?: string;
   crawlerUrls?: string[];
@@ -53,7 +53,7 @@ export const isValidUrl = (url: string) => {
 
 function validateCrawlerUrls(
   crawlerUrls: string[] | undefined,
-  discoveryTypes: Discovery[]
+  discoveryTypes: Discovery[] = []
 ) {
   if (crawlerUrls) {
     if (!discoveryTypes.includes(Discovery.CRAWLER)) {
@@ -78,7 +78,7 @@ function validateCrawlerUrls(
 
 function validateFileId(
   fileId: string | undefined,
-  discoveryTypes: Discovery[]
+  discoveryTypes: Discovery[] = []
 ) {
   if (fileId) {
     if (
@@ -111,13 +111,16 @@ export const validateConfig = ({
   fileId,
   crawlerUrls,
   discoveryTypes,
-  tests
+  tests,
+  entryPointIds
 }: Config) => {
-  validateDiscovery(discoveryTypes);
+  if (!entryPointIds?.length) { // validate discovery only if no entry point IDs are provided
+    validateDiscovery(discoveryTypes || []);
+  }
 
-  validateFileId(fileId, discoveryTypes);
+  validateFileId(fileId, discoveryTypes || []);
 
-  validateCrawlerUrls(crawlerUrls, discoveryTypes);
+  validateCrawlerUrls(crawlerUrls, discoveryTypes || []);
 
   if (tests) {
     validateTests(tests);
