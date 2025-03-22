@@ -39,6 +39,14 @@ More information is available on Bright's:
 
 **Required**. The ID of the project from which to list entrypoints.
 
+### `connectivity`
+
+**Optional**. One or more connectivity statuses as a comma-separated list. Available values: `ok`, `unreachable`, `problem`, `skipped`, `unauthorized`, `unavailable`.
+
+### `status`
+
+**Optional**. One or more security statuses as a comma-separated list. Available values: `new`, `changed`, `tested`, `vulnerable`.
+
 ### `limit`
 
 **Optional**. Maximum number of entrypoints to retrieve. Default is `100`.
@@ -63,9 +71,12 @@ steps:
       api_token: ${{ secrets.BRIGHT_TOKEN }}
       project_id: ${{ secrets.PROJECT_ID }}
       limit: 50
+      connectivity: ok,unreachable
+      status: new,vulnerable
     id: entrypoints
 
   - name: Use Entrypoints
     run: |
       echo "Project ID: ${{ steps.entrypoints.outputs.projectId }}"
       echo "Entrypoints: ${{ steps.entrypoints.outputs.entrypoints }}"
+```
