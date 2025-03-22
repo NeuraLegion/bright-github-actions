@@ -34,13 +34,13 @@
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.7.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.0",
     "prettier": "^3.4.2",
@@ -48,11 +48,11 @@
   },
   "lint-staged": {
     "*.{ts,js}": [
-      "./node_modules/.bin/eslint --fix",
-      "./node_modules/.bin/prettier --write"
+      "eslint --fix",
+      "prettier --write"
     ],
     "*.{json,md}": [
-      "./node_modules/.bin/prettier --write"
+      "prettier --write"
     ]
   },
   "dependencies": {
