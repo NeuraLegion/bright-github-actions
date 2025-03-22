@@ -8,7 +8,7 @@ var Discovery;
     Discovery["GRAPHQL"] = "graphql";
     Discovery["OAS"] = "oas";
 })(Discovery || (exports.Discovery = Discovery = {}));
-const validateDiscovery = (discoveryTypes) => {
+const validateDiscovery = (discoveryTypes = []) => {
     if (discoveryTypes.some((x) => !isValidDiscovery(x))) {
         throw new Error('Unknown discovery type supplied.');
     }

@@ -25669,7 +25669,7 @@ const isValidUrl = (url) => {
     }
 };
 exports.isValidUrl = isValidUrl;
-function validateCrawlerUrls(crawlerUrls, discoveryTypes) {
+function validateCrawlerUrls(crawlerUrls, discoveryTypes = []) {
     if (crawlerUrls) {
         if (!discoveryTypes.includes(discovery_1.Discovery.CRAWLER)) {
             throw new Error(`Invalid discovery. When specifying a crawler URLs, the discovery type must be "crawler". The current discovery types are: ${discoveryTypes.join(', ')}`);
@@ -25684,7 +25684,7 @@ function validateCrawlerUrls(crawlerUrls, discoveryTypes) {
         }
     }
 }
-function validateFileId(fileId, discoveryTypes) {
+function validateFileId(fileId, discoveryTypes = []) {
     if (fileId) {
         if (!(discoveryTypes.includes(discovery_1.Discovery.OAS) ||
             discoveryTypes.includes(discovery_1.Discovery.ARCHIVE) ||
@@ -25700,10 +25700,12 @@ function validateFileId(fileId, discoveryTypes) {
         }
     }
 }
-const validateConfig = ({ fileId, crawlerUrls, discoveryTypes, tests }) => {
-    (0, discovery_1.validateDiscovery)(discoveryTypes);
-    validateFileId(fileId, discoveryTypes);
-    validateCrawlerUrls(crawlerUrls, discoveryTypes);
+const validateConfig = ({ fileId, crawlerUrls, discoveryTypes, tests, entryPointIds }) => {
+    if (!(entryPointIds === null || entryPointIds === void 0 ? void 0 : entryPointIds.length)) { // validate discovery only if no entry point IDs are provided
+        (0, discovery_1.validateDiscovery)(discoveryTypes || []);
+    }
+    validateFileId(fileId, discoveryTypes || []);
+    validateCrawlerUrls(crawlerUrls, discoveryTypes || []);
     if (tests) {
         (0, tests_1.validateTests)(tests);
     }
@@ -25727,7 +25729,7 @@ var Discovery;
     Discovery["GRAPHQL"] = "graphql";
     Discovery["OAS"] = "oas";
 })(Discovery || (exports.Discovery = Discovery = {}));
-const validateDiscovery = (discoveryTypes) => {
+const validateDiscovery = (discoveryTypes = []) => {
     if (discoveryTypes.some((x) => !isValidDiscovery(x))) {
         throw new Error('Unknown discovery type supplied.');
     }
