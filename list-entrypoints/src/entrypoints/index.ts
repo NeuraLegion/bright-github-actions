@@ -53,10 +53,14 @@ async function run(): Promise<void> {
         params.append('nextCreatedAt', nextCreatedAt);
       }
       if (connectivity) {
-        connectivity.split(',').forEach(value => params.append('connectivity', value.trim()));
+        connectivity.split(',').map(value => value.trim()).forEach(value => {
+          params.append('connectivity[]', value);
+        });
       }
       if (status) {
-        status.split(',').forEach(value => params.append('status', value.trim()));
+        status.split(',').map(value => value.trim()).forEach(value => {
+          params.append('status[]', value);
+        });
       }
 
       const response = await client.get(
