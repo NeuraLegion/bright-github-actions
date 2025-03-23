@@ -213,7 +213,7 @@ jobs:
             ## Usage
 
             ```yaml
-            - uses: ${{ github.repository }}/${{ matrix.action }}@v${{ steps.get-version.outputs.version | split('.')[0] }}
+            - uses: ${{ github.repository }}/${{ matrix.action }}@v${{ steps.get-version.outputs.version }}
             ```
 
             ## Details
