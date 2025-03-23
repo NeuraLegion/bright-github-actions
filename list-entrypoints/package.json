@@ -1,6 +1,6 @@
 {
   "name": "list-entrypoints",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "This action lists project entrypoints in Bright Security platform",
   "main": "index.js",
   "scripts": {
