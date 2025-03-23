@@ -1,6 +1,6 @@
 {
   "name": "run-discovery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This action runs a new discovery in Bright.",
   "main": "index.js",
   "scripts": {

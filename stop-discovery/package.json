@@ -1,6 +1,6 @@
 {
   "name": "stop-discovery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This action action stops a Bright discovery.",
   "main": "index.js",
   "scripts": {
