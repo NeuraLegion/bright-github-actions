@@ -1,6 +1,6 @@
 {
   "name": "wait-for-discovery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This action waits for a Bright discovery to finish.",
   "main": "index.js",
   "scripts": {

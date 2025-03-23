@@ -1,6 +1,6 @@
 {
   "name": "stop-scan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This action action stops a Bright scan.",
   "main": "index.js",
   "scripts": {
