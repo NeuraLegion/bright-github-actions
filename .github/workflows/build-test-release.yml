@@ -206,8 +206,6 @@ jobs:
           tag_name: ${{ matrix.action }}@v${{ steps.get-version.outputs.version }}
           release_name: ${{ steps.get-metadata.outputs.name }} v${{ steps.get-version.outputs.version }}
           body: |
-            # ${{ steps.get-metadata.outputs.name }}
-
             ${{ steps.get-metadata.outputs.description }}
 
             ## Usage
