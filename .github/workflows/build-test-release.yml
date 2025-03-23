@@ -9,19 +9,57 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      changes_detected: ${{ steps.set-matrix.outputs.changes_detected }}
     env:
       HUSKY: 0
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Get all history for accurate change detection
       
-      - name: Get changed directories
+      - name: Get changed files
+        id: get-changed-files
+        run: |
+          # Get files changed in the most recent commit
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGED_FILES" > changed_files.txt
+          echo "Changed files:"
+          cat changed_files.txt
+      
+      - name: Detect changed actions
         id: set-matrix
         run: |
-          DIRS=$(ls -d */ | grep -v 'node_modules\|.git\|.github' | sed 's/\///g' | jq -R -s -c 'split("\n")[:-1]')
-          echo "matrix=${DIRS}" >> $GITHUB_OUTPUT
+          # Get all action directories (excluding special directories)
+          ALL_ACTIONS=$(ls -d */ | grep -v 'node_modules\|.git\|.github' | sed 's/\///g')
+          
+          # Identify which actions have changes
+          CHANGED_ACTIONS=()
+          for action in $ALL_ACTIONS; do
+            # Check if any files in this action directory have changed
+            if grep -q "^$action/" changed_files.txt; then
+              CHANGED_ACTIONS+=("$action")
+              echo "Action $action has changes"
+            fi
+          done
+          
+          # Check if any actions were changed
+          if [ ${#CHANGED_ACTIONS[@]} -eq 0 ]; then
+            echo "No action changes detected. Workflow will stop."
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "matrix=[]" >> $GITHUB_OUTPUT
+          else
+            # Convert to JSON array for the matrix
+            JSON_ARRAY=$(printf '"%s",' "${CHANGED_ACTIONS[@]}" | sed 's/,$//')
+            MATRIX="[${JSON_ARRAY}]"
+            
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+            echo "Actions to process: $MATRIX"
+          fi
 
   build-and-test:
     needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.changes_detected == 'true' }}
     runs-on: ubuntu-22.04
     env:
       HUSKY: 0
@@ -76,6 +114,7 @@ jobs:
   # Update release branch
   update-release-branch:
     needs: build-and-test
+    if: ${{ needs.detect-changes.outputs.changes_detected == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -116,48 +155,70 @@ jobs:
           folder: release
           clean: false  # Don't remove files that weren't changed
 
-  # Create GitHub Release
-  create-release:
-    needs: update-release-branch
+  # Create GitHub Releases for changed actions
+  create-action-releases:
+    needs: [detect-changes, update-release-branch]
+    if: ${{ needs.detect-changes.outputs.changes_detected == 'true' }}
     runs-on: ubuntu-22.04
-    env:
-      HUSKY: 0
+    strategy:
+      matrix:
+        action: ${{fromJson(needs.detect-changes.outputs.matrix)}}
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-      
-      - name: Get version
-        id: get_version
+      # Get version from action's package.json
+      - name: Get action version
+        id: get-version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          VERSION=$(node -p "require('./${{ matrix.action }}/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version $VERSION for ${{ matrix.action }}"
       
-      - name: Create Release
+      # Checkout release branch for the built code
+      - name: Checkout release branch
+        run: |
+          git fetch origin release
+          git checkout release
+      
+      # Get action metadata from release branch
+      - name: Get action metadata
+        id: get-metadata
+        run: |
+          if [ -f "${{ matrix.action }}/action.yml" ]; then
+            DISPLAY_NAME=$(grep "^name:" "${{ matrix.action }}/action.yml" | sed 's/name: //' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/")
+            DESCRIPTION=$(grep "^description:" "${{ matrix.action }}/action.yml" | sed 's/description: //' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/")
+            echo "name=$DISPLAY_NAME" >> $GITHUB_OUTPUT
+            echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+          else
+            echo "No action.yml found for ${{ matrix.action }} in release branch"
+            exit 1
+          fi
+      
+      # Create GitHub Release
+      - name: Create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release v${{ steps.get_version.outputs.version }}
+          tag_name: ${{ matrix.action }}@v${{ steps.get-version.outputs.version }}
+          release_name: ${{ steps.get-metadata.outputs.name }} v${{ steps.get-version.outputs.version }}
           body: |
-            Release of version ${{ steps.get_version.outputs.version }}
-            
-            This release includes all actions in the repository:
-            - run-discovery
-            - run-scan
-            - stop-discovery
-            - stop-scan
-            - wait-for
-            - wait-for-discovery
-            - list-entrypoints
+            # ${{ steps.get-metadata.outputs.name }}
+
+            ${{ steps.get-metadata.outputs.description }}
+
+            ## Usage
+
+            ```yaml
+            - uses: ${{ github.repository }}/${{ matrix.action }}@v${{ steps.get-version.outputs.version | split('.')[0] }}
+            ```
+
+            ## Details
+
+            Version ${{ steps.get-version.outputs.version }} of ${{ matrix.action }}.
           draft: false
           prerelease: false
+          commitish: release
